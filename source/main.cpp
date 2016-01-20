@@ -1,24 +1,28 @@
 #if defined(_WIN32) || (_WIN64)
 
-#include "SDL.h"
+	#include "SDL.h"
 
 #endif
 
 #if defined(__APPLE__)
 
-#include "SDL2/SDL.h"
+	#include "SDL2/SDL.h"
 
 #endif
 
 #if defined(__linux__)
 
-#include "SDL2/SDL.h"
+	#include "SDL2/SDL.h"
 
 #endif
+
+
 
 #include <stdio.h>
 #include <iostream>
 using namespace std;
+
+
 
 int main(int argc, char* argv[])
 {
@@ -33,6 +37,7 @@ int main(int argc, char* argv[])
 #if defined(__APPLE__)
 
 	cout << "Running on Apple..." << endl;
+	cout << "Added on Apple..." << endl;
 
 #endif
 
@@ -65,6 +70,14 @@ int main(int argc, char* argv[])
 		printf("Could not create window: %s\n", SDL_GetError());
 		return 1;
 	}
+
+	SDL_Surface* screenSurface = NULL;
+
+	screenSurface = SDL_GetWindowSurface(window);
+
+	SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0, 42, 254));
+
+	SDL_UpdateWindowSurface(window);
 
 	// The window is open: could enter program loop here (see SDL_PollEvent())
 

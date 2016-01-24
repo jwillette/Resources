@@ -102,6 +102,7 @@ int main(int argc, char* argv[])
 
 	// ***** Boolean values to control movement through the states *****
 	bool menu, instructions, players1, players2, win, lose, quit;
+	quit = false;
 
 
 

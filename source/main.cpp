@@ -69,7 +69,7 @@ void UpdateBackground()
 	bkgd1Pos.y = (int)(b1pos_Y + 0.5f);
 
 	// Reset when off the bottom of the screen
-	if(bkgd1Pos.y >= 768)
+	if (bkgd1Pos.y >= 768)
 	{
 		bkgd1Pos.y = -768;
 		b1pos_Y = bkgd1Pos.y;
@@ -82,7 +82,7 @@ void UpdateBackground()
 	bkgd2Pos.y = (int)(b2pos_Y + 0.5f);
 
 	// Reset when off the bottom of the screen
-	if(bkgd2Pos.y >= 768)
+	if (bkgd2Pos.y >= 768)
 	{
 		bkgd2Pos.y = -768;
 		b2pos_Y = bkgd2Pos.y;
@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
 	cout << "Added on Apple..." << endl;
 
 	// get the current working directory
-	string cwd(getcwd(NULL,0));
+	string cwd(getcwd(NULL, 0));
 
 	// create a string linking to the mac's images folder
 	string images_dir = cwd + "/Resources/images/";
@@ -130,10 +130,10 @@ int main(int argc, char* argv[])
 	cout << "Added on Linux..." << endl;
 
 	// string var to hold the current working directory on __linux__
-	string currentWorkingDirectory(getcwd(NULL,0));
+	string currentWorkingDirectory(getcwd(NULL, 0));
 
 	// create a string to link to the images folder on __linux__
-	string images_dir = currentWorkingDirectory +"/Resources/images/";
+	string images_dir = currentWorkingDirectory + "/Resources/images/";
 
 #endif
 
@@ -145,13 +145,13 @@ int main(int argc, char* argv[])
 
 	// Create an application window with the following settings:
 	window = SDL_CreateWindow(
-			"An SDL2 window",                  // window title
-			SDL_WINDOWPOS_UNDEFINED,           // initial x position
-			SDL_WINDOWPOS_UNDEFINED,           // initial y position
-			1024,                               // width, in pixels
-			768,                               // height, in pixels
-			SDL_WINDOW_OPENGL                  // flags - see below
-	);
+		"An SDL2 window",                  // window title
+		SDL_WINDOWPOS_UNDEFINED,           // initial x position
+		SDL_WINDOWPOS_UNDEFINED,           // initial y position
+		1024,                               // width, in pixels
+		768,                               // height, in pixels
+		SDL_WINDOW_OPENGL                  // flags - see below
+		);
 
 	// Check that the window was successfully created
 	if (window == NULL) {
@@ -312,17 +312,17 @@ int main(int argc, char* argv[])
 
 	// ***** Instructions ***** //
 
-	//			surface = IMG_Load((images_dir + "instructions.png").c_str());
-	//			SDL_Texture *instructionsText;
-	//			title = SDL_CreateTextureFromSurface(renderer, surface);
-	//			SDL_FreeSurface(surface);
-	//
-	//			SDL_Rect instructionsTextPos;
-	//
-	//			instructionsTextPos.x = 390;
-	//			instructionsTextPos.y = 30;
-	//			instructionsTextPos.w = 244;
-	//			instructionsTextPos.h = 178;
+	surface = IMG_Load((images_dir + "instructions-text.png").c_str());
+	SDL_Texture *instructionsText;
+	instructionsText = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+
+	SDL_Rect instructionsTextPos;
+
+	instructionsTextPos.x = 250;
+	instructionsTextPos.y = 300;
+	instructionsTextPos.w = 529;
+	instructionsTextPos.h = 287;
 
 
 	// ***** Main Menu ***** //
@@ -339,8 +339,8 @@ int main(int argc, char* argv[])
 
 	SDL_Rect menuNPos;
 
-	menuNPos.x = 420;
-	menuNPos.y = 640;
+	menuNPos.x = 10;
+	menuNPos.y = 700;
 	menuNPos.w = 203;
 	menuNPos.h = 47;
 
@@ -368,22 +368,22 @@ int main(int argc, char* argv[])
 
 	// ***** Play Again ***** //
 
-	//	surface = IMG_Load((images_dir + "play.png").c_str());
-	//	SDL_Texture *playN;
-	//	playN = SDL_CreateTextureFromSurface(renderer, surface);
-	//	SDL_FreeSurface(surface);
-	//
-	//	surface = IMG_Load((images_dir + "play-over.png").c_str());
-	//	SDL_Texture *playO;
-	//	playO = SDL_CreateTextureFromSurface(renderer, surface);
-	//	SDL_FreeSurface(surface);
-	//
-	//	SDL_Rect playNPos;
-	//
-	//	playNPos.x = 420;
-	//	playNPos.y = 640;
-	//	playNPos.w = 203;
-	//	playNPos.h = 47;
+	surface = IMG_Load((images_dir + "play.png").c_str());
+	SDL_Texture *playN;
+	playN = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+
+	surface = IMG_Load((images_dir + "play-over.png").c_str());
+	SDL_Texture *playO;
+	playO = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+
+	SDL_Rect playNPos;
+
+	playNPos.x = 810;
+	playNPos.y = 700;
+	playNPos.w = 193;
+	playNPos.h = 47;
 
 
 
@@ -407,24 +407,44 @@ int main(int argc, char* argv[])
 	loseTextPos.h = 190;
 
 
+	//// ***** Main Menu ***** //
+
+	//surface = IMG_Load((images_dir + "menu.png").c_str());
+	//SDL_Texture *menuN;
+	//menuN = SDL_CreateTextureFromSurface(renderer, surface);
+	//SDL_FreeSurface(surface);
+
+	//surface = IMG_Load((images_dir + "menu-over.png").c_str());
+	//SDL_Texture *menuO;
+	//menuO = SDL_CreateTextureFromSurface(renderer, surface);
+	//SDL_FreeSurface(surface);
+
+	//SDL_Rect menuNPos;
+
+	//menuNPos.x = 10;
+	//menuNPos.y = 640;
+	//menuNPos.w = 203;
+	//menuNPos.h = 47;
+
+
 	// ***** Play Again ***** //
 
-	//	surface = IMG_Load((images_dir + "play.png").c_str());
-	//	SDL_Texture *playN;
-	//	playN = SDL_CreateTextureFromSurface(renderer, surface);
-	//	SDL_FreeSurface(surface);
-	//
-	//	surface = IMG_Load((images_dir + "play-over.png").c_str());
-	//	SDL_Texture *playO;
-	//	playO = SDL_CreateTextureFromSurface(renderer, surface);
-	//	SDL_FreeSurface(surface);
-	//
-	//	SDL_Rect playNPos;
-	//
-	//	playNPos.x = 420;
-	//	playNPos.y = 640;
-	//	playNPos.w = 203;
-	//	playNPos.h = 47;
+	//surface = IMG_Load((images_dir + "play.png").c_str());
+	//SDL_Texture *playN;
+	//playN = SDL_CreateTextureFromSurface(renderer, surface);
+	//SDL_FreeSurface(surface);
+
+	//surface = IMG_Load((images_dir + "play-over.png").c_str());
+	//SDL_Texture *playO;
+	//playO = SDL_CreateTextureFromSurface(renderer, surface);
+	//SDL_FreeSurface(surface);
+
+	//SDL_Rect playNPos;
+
+	//playNPos.x = 810;
+	//playNPos.y = 640;
+	//playNPos.w = 193;
+	//playNPos.h = 47;
 
 
 
@@ -470,11 +490,11 @@ int main(int argc, char* argv[])
 
 
 
-	/////////////////////////////////////////
-	//     ***** Create Controller *****
-	/////////////////////////////////////////
+	 /////////////////////////////////////////
+	 //     ***** Create Controller *****
+	 /////////////////////////////////////////
 
-	// Set up a game controller variable
+	 // Set up a game controller variable
 	SDL_GameController* gGameController = NULL;
 
 	// Open game controller
@@ -487,7 +507,7 @@ int main(int argc, char* argv[])
 	SDL_Event event;
 
 	// Set up variables for the game states
-	enum GameState{MENU, INSTRUCTIONS, PLAYERS1, PLAYERS2, WIN, LOSE};
+	enum GameState { MENU, INSTRUCTIONS, PLAYERS1, PLAYERS2, WIN, LOSE };
 
 	// Set up the initial state
 	GameState gameState = MENU;
@@ -502,9 +522,9 @@ int main(int argc, char* argv[])
 
 	// The window is open: could enter program loop here (see SDL_PollEvent())
 
-	while(!quit)
+	while (!quit)
 	{
-		switch(gameState)
+		switch (gameState)
 		{
 		case MENU:
 			menu = true;
@@ -515,49 +535,49 @@ int main(int argc, char* argv[])
 			cout << "Press the Y Button for Quit Game" << endl;
 			cout << endl;
 
-			while(menu)
+			while (menu)
 			{
 				// Set up frame rate for the section, or CASE
 				thisTime = SDL_GetTicks();
-				deltaTime = (float)(thisTime - lastTime)/1000;
+				deltaTime = (float)(thisTime - lastTime) / 1000;
 				lastTime = thisTime;
 
 
 				// Check for input events
-				if(SDL_PollEvent(&event))
+				if (SDL_PollEvent(&event))
 				{
 					// Check to see if the SDL window is closed - player clicks X in window
-					if(event.type == SDL_QUIT)
+					if (event.type == SDL_QUIT)
 					{
 						quit = true;
 						menu = false;
 						break;
 					}
 
-					switch(event.type)
+					switch (event.type)
 					{
 					case SDL_CONTROLLERBUTTONDOWN:
-						if(event.cdevice.which == 0)
+						if (event.cdevice.which == 0)
 						{
-							if(event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
 								menu = false;
 								gameState = INSTRUCTIONS;
 							}
 
-							if(event.cbutton.button == SDL_CONTROLLER_BUTTON_B)
+							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_B)
 							{
 								menu = false;
 								gameState = PLAYERS1;
 							}
 
-							if(event.cbutton.button == SDL_CONTROLLER_BUTTON_X)
+							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_X)
 							{
 								menu = false;
 								gameState = PLAYERS2;
 							}
 
-							if(event.cbutton.button == SDL_CONTROLLER_BUTTON_Y)
+							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_Y)
 							{
 								menu = false;
 								quit = true;
@@ -617,31 +637,31 @@ int main(int argc, char* argv[])
 			cout << "Press the A Button for Main Menu" << endl;
 			cout << endl;
 
-			while(instructions)
+			while (instructions)
 			{
 				// Set up frame rate for the section, or CASE
 				thisTime = SDL_GetTicks();
-				deltaTime = (float)(thisTime - lastTime)/1000;
+				deltaTime = (float)(thisTime - lastTime) / 1000;
 				lastTime = thisTime;
 
 
 				// Check for input events
-				if(SDL_PollEvent(&event))
+				if (SDL_PollEvent(&event))
 				{
 					// Check to see if the SDL window is closed - player clicks X in window
-					if(event.type == SDL_QUIT)
+					if (event.type == SDL_QUIT)
 					{
 						quit = true;
 						instructions = false;
 						break;
 					}
 
-					switch(event.type)
+					switch (event.type)
 					{
 					case SDL_CONTROLLERBUTTONDOWN:
-						if(event.cdevice.which == 0)
+						if (event.cdevice.which == 0)
 						{
-							if(event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
 								instructions = false;
 								gameState = MENU;
@@ -665,7 +685,10 @@ int main(int argc, char* argv[])
 				// Draw title
 				SDL_RenderCopy(renderer, title, NULL, &titlePos);
 
-				// Draw instructions
+				// Draw instructions text
+				SDL_RenderCopy(renderer, instructionsText, NULL, &instructionsTextPos);
+
+				// Draw menu
 				SDL_RenderCopy(renderer, menuN, NULL, &menuNPos);
 
 				// SDL render present
@@ -685,35 +708,35 @@ int main(int argc, char* argv[])
 			cout << "Press the B Button for Lose Screen" << endl;
 			cout << endl;
 
-			while(players1)
+			while (players1)
 			{
 				thisTime = SDL_GetTicks();
-				deltaTime = (float)(thisTime - lastTime)/1000;
+				deltaTime = (float)(thisTime - lastTime) / 1000;
 				lastTime = thisTime;
 
 				// Check for input events
-				if(SDL_PollEvent(&event))
+				if (SDL_PollEvent(&event))
 				{
 					// Check to see if the SDL window is closed - player clicks X in window
-					if(event.type == SDL_QUIT)
+					if (event.type == SDL_QUIT)
 					{
 						quit = true;
 						players1 = false;
 						break;
 					}
 
-					switch(event.type)
+					switch (event.type)
 					{
 					case SDL_CONTROLLERBUTTONDOWN:
-						if(event.cdevice.which == 0)
+						if (event.cdevice.which == 0)
 						{
-							if(event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
 								players1 = false;
 								gameState = WIN;
 							}
 
-							if(event.cbutton.button == SDL_CONTROLLER_BUTTON_B)
+							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_B)
 							{
 								players1 = false;
 								gameState = LOSE;
@@ -754,35 +777,35 @@ int main(int argc, char* argv[])
 			cout << "Press the B Button for Lose Screen" << endl;
 			cout << endl;
 
-			while(players2)
+			while (players2)
 			{
 				thisTime = SDL_GetTicks();
-				deltaTime = (float)(thisTime - lastTime)/1000;
+				deltaTime = (float)(thisTime - lastTime) / 1000;
 				lastTime = thisTime;
 
 				// Check for input events
-				if(SDL_PollEvent(&event))
+				if (SDL_PollEvent(&event))
 				{
 					// Check to see if the SDL window is closed - player clicks X in window
-					if(event.type == SDL_QUIT)
+					if (event.type == SDL_QUIT)
 					{
 						quit = true;
 						players2 = false;
 						break;
 					}
 
-					switch(event.type)
+					switch (event.type)
 					{
 					case SDL_CONTROLLERBUTTONDOWN:
-						if(event.cdevice.which == 0)
+						if (event.cdevice.which == 0)
 						{
-							if(event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
 								players2 = false;
 								gameState = WIN;
 							}
 
-							if(event.cbutton.button == SDL_CONTROLLER_BUTTON_B)
+							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_B)
 							{
 								players2 = false;
 								gameState = LOSE;
@@ -823,35 +846,35 @@ int main(int argc, char* argv[])
 			cout << "Press the B Button to Replay Game" << endl;
 			cout << endl;
 
-			while(win)
+			while (win)
 			{
 				thisTime = SDL_GetTicks();
-				deltaTime = (float)(thisTime - lastTime)/1000;
+				deltaTime = (float)(thisTime - lastTime) / 1000;
 				lastTime = thisTime;
 
 				// Check for input events
-				if(SDL_PollEvent(&event))
+				if (SDL_PollEvent(&event))
 				{
 					// Check to see if the SDL window is closed - player clicks X in window
-					if(event.type == SDL_QUIT)
+					if (event.type == SDL_QUIT)
 					{
 						quit = true;
 						win = false;
 						break;
 					}
 
-					switch(event.type)
+					switch (event.type)
 					{
 					case SDL_CONTROLLERBUTTONDOWN:
-						if(event.cdevice.which == 0)
+						if (event.cdevice.which == 0)
 						{
-							if(event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
 								win = false;
 								gameState = MENU;
 							}
 
-							if(event.cbutton.button == SDL_CONTROLLER_BUTTON_B)
+							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_B)
 							{
 								win = false;
 								gameState = PLAYERS1;
@@ -872,8 +895,14 @@ int main(int argc, char* argv[])
 				// Draw cursor
 				SDL_RenderCopy(renderer, cursor, NULL, &cursorPos);
 
-				// Draw instructions
+				// Draw win text
 				SDL_RenderCopy(renderer, winText, NULL, &winTextPos);
+
+				// Draw menu
+				SDL_RenderCopy(renderer, menuN, NULL, &menuNPos);
+
+				// Draw play again
+				SDL_RenderCopy(renderer, playN, NULL, &playNPos);
 
 				// SDL render present
 				SDL_RenderPresent(renderer);
@@ -892,35 +921,35 @@ int main(int argc, char* argv[])
 			cout << "Press the B Button to Replay Game" << endl;
 			cout << endl;
 
-			while(lose)
+			while (lose)
 			{
 				thisTime = SDL_GetTicks();
-				deltaTime = (float)(thisTime - lastTime)/1000;
+				deltaTime = (float)(thisTime - lastTime) / 1000;
 				lastTime = thisTime;
 
 				// Check for input events
-				if(SDL_PollEvent(&event))
+				if (SDL_PollEvent(&event))
 				{
 					// Check to see if the SDL window is closed - player clicks X in window
-					if(event.type == SDL_QUIT)
+					if (event.type == SDL_QUIT)
 					{
 						quit = true;
 						lose = false;
 						break;
 					}
 
-					switch(event.type)
+					switch (event.type)
 					{
 					case SDL_CONTROLLERBUTTONDOWN:
-						if(event.cdevice.which == 0)
+						if (event.cdevice.which == 0)
 						{
-							if(event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
 								lose = false;
 								gameState = MENU;
 							}
 
-							if(event.cbutton.button == SDL_CONTROLLER_BUTTON_B)
+							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_B)
 							{
 								lose = false;
 								gameState = PLAYERS1;
@@ -941,8 +970,14 @@ int main(int argc, char* argv[])
 				// Draw cursor
 				SDL_RenderCopy(renderer, cursor, NULL, &cursorPos);
 
-				// Draw instructions
+				// Draw lose text
 				SDL_RenderCopy(renderer, loseText, NULL, &loseTextPos);
+
+				// Draw menu
+				SDL_RenderCopy(renderer, menuN, NULL, &menuNPos);
+
+				// Draw play again
+				SDL_RenderCopy(renderer, playN, NULL, &playNPos);
 
 				// SDL render present
 				SDL_RenderPresent(renderer);

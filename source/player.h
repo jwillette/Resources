@@ -29,11 +29,18 @@ using namespace std;
 
 
 
+// Bullet includes
+#include <vector>
+#include "bullet.h"
+
 
 
 class Player
 {
 public:
+
+	// variable to hold the list of bullets
+	vector<Bullet> bulletList;
 
 	// string to hold the path to the player's texture
 	string playerPath;

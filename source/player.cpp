@@ -1,5 +1,7 @@
 #include "player.h"
 
+
+
 // Analog joystick deadzone
 const int JOYSTICK_DEAD_ZONE = 8000;
 
@@ -47,6 +49,29 @@ Player::Player(SDL_Renderer *renderer, int pNum, string filePath, float x, float
 	// Set the xDir and yDir for the joysticks
 	xDir = 0;
 	yDir = 0;
+
+
+
+	// String to create the path to the player's bullet image
+	string bulletPath;
+
+	if(playerNum == 0)
+	{
+		// Create the player 1 texture
+		bulletPath = filePath + "bullet.png";
+	} else {
+		bulletPath = filePath + "bullet2.png";
+	}
+
+	// Create the bullet pool
+	for(int i = 0; i < 10; i++)
+	{
+		// create  the bullet and move offscreen, out of the game play area
+		Bullet tmpBullet(renderer, bulletPath, -1000, -1000);
+
+		// add to bulletList
+		bulletList.push_back(tmpBullet);
+	}
 }
 
 
@@ -96,6 +121,8 @@ void Player::OnControllerButton(const SDL_ControllerButtonEvent event)
 		if(event.button == 0)
 		{
 			cout << "Player 1 - Button A" << endl;
+
+			//CreateBullet();
 		}
 	}
 
@@ -105,6 +132,8 @@ void Player::OnControllerButton(const SDL_ControllerButtonEvent event)
 		if(event.button == 0)
 		{
 			cout << "Player 2 - Button A" << endl;
+
+			//CreateBullet();
 		}
 	}
 }

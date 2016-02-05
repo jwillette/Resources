@@ -40,7 +40,6 @@
 
 #include <stdio.h>
 #include <iostream>
-#include "player.h"
 
 using namespace std;
 
@@ -184,6 +183,9 @@ void UpdateCursor(float deltaTime)
 bool players1Over = false, players2Over = false, instructionsOver = false, quitOver = false,
 		menuOver = false, playOver = false;
 
+// class header
+#include "player.h"
+
 
 
 
@@ -265,9 +267,9 @@ int main(int argc, char* argv[])
 
 
 
-	//	// Create the players
-	//	Player player1 = Player(renderer, 0, images_dir.c_str(), 250.0, 500.0);
-	//	Player player2 = Player(renderer, 1, images_dir.c_str(), 750.0, 500.0);
+	// Create the players
+	Player player1 = Player(renderer, 0, images_dir.c_str(), 250.0, 500.0);
+	Player player2 = Player(renderer, 1, images_dir.c_str(), 750.0, 500.0);
 
 
 
@@ -865,15 +867,15 @@ int main(int argc, char* argv[])
 						break;
 
 					case SDL_CONTROLLERAXISMOTION:
-						//player1.OnControllerAxis(event.caxis);
+						player1.OnControllerAxis(event.caxis);
 						break;
 					}
 				}
 
 				UpdateBackground();
 
-				//// Update player
-				//player1.Update(deltaTime);
+				// Update player
+				player1.Update(deltaTime);
 
 
 
@@ -883,12 +885,9 @@ int main(int argc, char* argv[])
 				SDL_RenderCopy(renderer, bkgd1, NULL, &bkgd1Pos);
 				SDL_RenderCopy(renderer, bkgd2, NULL, &bkgd2Pos);
 
-				// Draw instructions
-				SDL_RenderCopy(renderer, players1N, NULL, &players1NPos);
 
-
-				//// Draw player 1
-				//player1.Draw(renderer);
+				// Draw player 1
+				player1.Draw(renderer);
 
 
 				// SDL render present
@@ -943,8 +942,8 @@ int main(int argc, char* argv[])
 						break;
 
 					case SDL_CONTROLLERAXISMOTION:
-						//player1.OnControllerAxis(event.caxis);
-						//player2.OnControllerAxis(event.caxis);
+						player1.OnControllerAxis(event.caxis);
+						player2.OnControllerAxis(event.caxis);
 						break;
 					}
 				}
@@ -952,8 +951,8 @@ int main(int argc, char* argv[])
 				UpdateBackground();
 
 
-				//player1.Update(deltaTime);
-				//player2.Update(deltaTime);
+				player1.Update(deltaTime);
+				player2.Update(deltaTime);
 
 
 				// Start drawing
@@ -962,12 +961,12 @@ int main(int argc, char* argv[])
 				SDL_RenderCopy(renderer, bkgd1, NULL, &bkgd1Pos);
 				SDL_RenderCopy(renderer, bkgd2, NULL, &bkgd2Pos);
 
-				// Draw instructions
-				SDL_RenderCopy(renderer, players2N, NULL, &players2NPos);
+				//// Draw instructions
+				//SDL_RenderCopy(renderer, players2N, NULL, &players2NPos);
 
 
-				//player1.Draw(renderer);
-				//player2.Draw(renderer);
+				player1.Draw(renderer);
+				player2.Draw(renderer);
 
 
 				// SDL render present

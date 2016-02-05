@@ -18,7 +18,7 @@ Player::Player(SDL_Renderer *renderer, int pNum, string filePath, float x, float
 	if(playerNum == 0)
 	{
 		// Create the player 1 texture
-		playerPath = filePath + "player.png";
+		playerPath = filePath + "player1.png";
 	} else {
 		playerPath = filePath + "player2.png";
 	}
@@ -90,8 +90,8 @@ void Player::Update(float deltaTime)
 		pos_X = posRect.x;
 	}
 
-	if(posRect.x > 1024) {
-		posRect.x = 1024;
+	if(posRect.x > 1024 - posRect.w) {
+		posRect.x = 1024 - posRect.w;
 		pos_X = posRect.x;
 	}
 
@@ -100,8 +100,8 @@ void Player::Update(float deltaTime)
 		pos_Y = posRect.y;
 	}
 
-	if(posRect.y > 768) {
-		posRect.y = 768;
+	if(posRect.y > 768 - posRect.h) {
+		posRect.y = 768 - posRect.h;
 		pos_Y = posRect.y;
 	}
 
@@ -218,4 +218,11 @@ void Player::OnControllerAxis(const SDL_ControllerAxisEvent event)
 			}
 		}
 	}
+}
+
+
+
+Player::~Player()
+{
+	SDL_DestroyTexture(texture);
 }

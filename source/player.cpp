@@ -104,6 +104,18 @@ void Player::Update(float deltaTime)
 		posRect.y = 768;
 		pos_Y = posRect.y;
 	}
+
+
+	// Update the player's bullets
+	for(int i = 0; i < bulletList.size(); i++)
+	{
+		// Check to see if the bullet is active
+		if(bulletList[i].active)
+		{
+			// Update the bullet
+			bulletList[i].Update(deltaTime);
+		}
+	}
 }
 
 
@@ -111,6 +123,47 @@ void Player::Update(float deltaTime)
 void Player::Draw(SDL_Renderer *renderer)
 {
 	SDL_RenderCopy(renderer, texture, NULL, &posRect);
+
+	// Draw the player's bullets
+	for(int i = 0; i < bulletList.size(); i++)
+	{
+		// Check to see if the bullet is active
+		if(bulletList[i].active)
+		{
+			//// Update the bullet
+			//bulletList[i].Draw(renderer);
+		}
+	}
+}
+
+
+void Player::CreateBullet()
+{
+	// see if there is a bullet active to fire
+	for(int i = 0; i < bulletList.size(); i++)
+	{
+		//see if the bullet is not active
+		if(bulletList[i].active == false)
+		{
+			//set bullet to active
+			bulletList[i].active = true;
+
+			// use some math in the x position to get the bullet close
+			// to the center of the player using width
+			bulletList[i].posRect.x = (pos_X + (posRect.w/2));
+
+			// finish aligning to the player center using the texture width
+			bulletList[i].posRect.x = (bulletList[i].posRect.x - (bulletList[i].posRect.w/2));
+			bulletList[i].posRect.y = posRect.y;
+
+			// set the x and y positions of the bullet's float positions
+			bulletList[i].pos_X = pos_X;
+			bulletList[i].pos_Y = pos_Y;
+
+			// once bullet is found, break out of loop
+			break;
+		}
+	}
 }
 
 

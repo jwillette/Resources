@@ -68,7 +68,6 @@ public:
 	float pos_X, pos_Y;
 
 
-
 	// Player's creation method using passed in values for renderer, player number, and path to texture
 	// starting position X, starting position Y
 	Player(SDL_Renderer *renderer, int pNum, string filePath, float x, float y);
@@ -87,4 +86,8 @@ public:
 
 	// Player's destruction method
 	~Player();
+
+
+private:
+	void CreateBullet();
 };

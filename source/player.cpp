@@ -6,13 +6,39 @@
 const int JOYSTICK_DEAD_ZONE = 8000;
 
 // Player creation method
-Player::Player(SDL_Renderer *renderer, int pNum, string filePath, float x, float y)
+Player::Player(SDL_Renderer *renderer, int pNum, string filePath, string audioPath, float x, float y)
 {
 	// Set the player number 0 or 1
 	playerNum = pNum;
 
 	// Set float for player speed
 	speed = 500.0f;
+
+	laser = Mix_LoadWAV((audioPath + "laser.wav").c_str());
+
+	// Initialize score and lives variables
+	oldScore = 0;
+	playerScore = 0;
+	oldLives = 0;
+	playerLives = 3;
+
+	// Initialize the font system
+	TTF_Init();
+
+	//// Load the font
+	//font = TTF_OpenFont((audioPath + "PHOES__.TTF").c_str(), 40);
+
+	if(playerNum == 0)
+	{
+		scorePos.x = scorePos.y = 10;
+		livesPos.x = 10;
+		livesPos.y = 40;
+	} else {
+		scorePos.x = 650;
+		scorePos.y = 10;
+		livesPos.x = 650;
+		livesPos.y = 40;
+	}
 
 	// See if this is player 1 or player 2 and create the correct file path
 	if(playerNum == 0)
@@ -83,6 +109,9 @@ void Player::CreateBullet()
 		//see if the bullet is not active
 		if (bulletList[i].active == false)
 		{
+			// play the laser sound
+			Mix_PlayChannel(-1, laser, 0);
+
 			//set bullet to active
 			bulletList[i].active = true;
 

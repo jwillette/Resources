@@ -2,6 +2,7 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
+#include "SDL_mixer.h"
 
 #endif
 
@@ -17,6 +18,7 @@
 
 #include "SDL2/SDL.h"
 #include "SDL2_image/SDL_image.h"
+#include "SDL2_mixer/SDL_mixer.h"
 
 #endif
 
@@ -25,6 +27,7 @@
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
+#include "SDL2/SDL_mixer.h"
 
 #endif
 
@@ -197,9 +200,11 @@ int main(int argc, char* argv[])
 	cout << "Running on Windows..." << endl;
 	cout << "Added on Windows..." << endl;
 
-	string currentWorkingDirectory(getcwd(NULL, 0));
+	string cwd(getcwd(NULL, 0));
 
-	string images_dir = currentWorkingDirectory + "\\Resources\\images\\";
+	string images_dir = cwd + "\\Resources\\images\\";
+
+	string audio_dir = cwd + "\\Resources\\audio\\";
 
 #endif
 
@@ -215,8 +220,8 @@ int main(int argc, char* argv[])
 	// create a string linking to the mac's images folder
 	string images_dir = cwd + "/Resources/images/";
 
-	// test
-	cout << images_dir << endl;
+	// create a string to link to the audio folder
+	string audio_dir = cwd + "/Resources/audio/";
 
 #endif
 
@@ -226,11 +231,11 @@ int main(int argc, char* argv[])
 	cout << "Running on Linux..." << endl;
 	cout << "Added on Linux..." << endl;
 
-	// string var to hold the current working directory on __linux__
-	string currentWorkingDirectory(getcwd(NULL, 0));
+	string cwd(getcwd(NULL, 0));
 
-	// create a string to link to the images folder on __linux__
-	string images_dir = currentWorkingDirectory + "/Resources/images/";
+	string images_dir = cwd + "/Resources/images/";
+
+	string audio_dir = cwd + "/Resources/audio/";
 
 #endif
 
@@ -264,12 +269,6 @@ int main(int argc, char* argv[])
 
 	// Create the renderer
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-
-
-	// Create the players
-	Player player1 = Player(renderer, 0, images_dir.c_str(), 250.0, 500.0);
-	Player player2 = Player(renderer, 1, images_dir.c_str(), 750.0, 500.0);
 
 
 
@@ -583,6 +582,37 @@ int main(int argc, char* argv[])
 
 
 
+	/////////////////////////////////////////
+	//           ***** Audio *****
+	/////////////////////////////////////////
+
+	// Open audio channel
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+
+	// Load a music file
+	Mix_Music *bgm = Mix_LoadMUS((audio_dir + "Disco-Ants-Go-Clubbin.mp3").c_str());
+
+	// If the music file is not playing, play it
+	if(!Mix_PlayingMusic())
+		Mix_PlayMusic(bgm, -1);
+
+	// Set up a Sound Effect chunk for the button over state
+	Mix_Chunk *overSound = Mix_LoadWAV((audio_dir + "over.wav").c_str());
+
+	// Set up a Sound Effect chunk for the button over state
+	Mix_Chunk *pressedSound = Mix_LoadWAV((audio_dir + "pressed.wav").c_str());
+
+	// Bool value to control the over sound effect and the buttons
+	bool alreadyOver = false;
+
+
+
+	// Create the players
+	Player player1 = Player(renderer, 0, images_dir.c_str(), audio_dir.c_str(), 250.0, 500.0);
+	Player player2 = Player(renderer, 1, images_dir.c_str(), audio_dir.c_str(), 750.0, 500.0);
+
+
+
 
 
 	// The window is open: could enter program loop here (see SDL_PollEvent())
@@ -592,6 +622,7 @@ int main(int argc, char* argv[])
 		switch (gameState)
 		{
 		case MENU:
+			alreadyOver = false;
 			menu = true;
 
 			while (menu)
@@ -622,6 +653,9 @@ int main(int argc, char* argv[])
 							{
 								if(players1Over)
 								{
+									// Play the over sound - plays fine through levels, must pause for quit
+									Mix_PlayChannel(-1, pressedSound, 0);
+
 									menu = false;
 									gameState = PLAYERS1;
 									players1Over = false;
@@ -629,6 +663,8 @@ int main(int argc, char* argv[])
 
 								if(players2Over)
 								{
+									Mix_PlayChannel(-1, pressedSound, 0);
+
 									menu = false;
 									gameState = PLAYERS2;
 									players2Over = false;
@@ -636,6 +672,8 @@ int main(int argc, char* argv[])
 
 								if(instructionsOver)
 								{
+									Mix_PlayChannel(-1, pressedSound, 0);
+
 									menu = false;
 									gameState = INSTRUCTIONS;
 									instructionsOver = false;
@@ -643,6 +681,9 @@ int main(int argc, char* argv[])
 
 								if(quitOver)
 								{
+									Mix_PlayChannel(-1, pressedSound, 0);
+									SDL_Delay(1000);
+
 									menu = false;
 									quit = true;
 									quitOver = false;
@@ -672,6 +713,24 @@ int main(int argc, char* argv[])
 				players2Over = SDL_HasIntersection(&activePos, &players2NPos);
 				instructionsOver = SDL_HasIntersection(&activePos, &instructionsNPos);
 				quitOver = SDL_HasIntersection(&activePos, &quitNPos);
+
+
+
+				// If the cursor is over a button, play the over sound
+				if(players1Over || players2Over || instructionsOver || quitOver)
+				{
+					if(alreadyOver == false)
+					{
+						Mix_PlayChannel(-1, overSound, 0);
+						alreadyOver = true;
+					}
+				}
+
+				// If the cursor is not over any button, reset the alreadyOver variable
+				if(!players1Over && !players2Over && !instructionsOver && !quitOver)
+				{
+					alreadyOver = false;
+				}
 
 
 
@@ -736,6 +795,7 @@ int main(int argc, char* argv[])
 
 
 		case INSTRUCTIONS:
+			alreadyOver = false;
 			instructions = true;
 
 			while (instructions)
@@ -765,6 +825,8 @@ int main(int argc, char* argv[])
 							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
 								if(menuOver) {
+									Mix_PlayChannel(-1, pressedSound, 0);
+
 									instructions = false;
 									gameState = MENU;
 									menuOver = false;
@@ -783,8 +845,23 @@ int main(int argc, char* argv[])
 				UpdateCursor(deltaTime);
 
 
-				// collision
+				// Collision
 				menuOver = SDL_HasIntersection(&activePos, &menuNPos);
+
+
+				if(menuOver)
+				{
+					if(alreadyOver == false)
+					{
+						Mix_PlayChannel(-1, overSound, 0);
+						alreadyOver = true;
+					}
+				}
+
+				if(!menuOver)
+				{
+					alreadyOver = false;
+				}
 
 
 				// Start drawing
@@ -825,6 +902,7 @@ int main(int argc, char* argv[])
 
 
 		case PLAYERS1:
+			alreadyOver = false;
 			players1 = true;
 
 			while (players1)
@@ -901,6 +979,7 @@ int main(int argc, char* argv[])
 
 
 		case PLAYERS2:
+			alreadyOver = false;
 			players2 = true;
 
 			while (players2)
@@ -977,6 +1056,7 @@ int main(int argc, char* argv[])
 
 
 		case WIN:
+			alreadyOver = false;
 			win = true;
 
 			while (win)
@@ -1004,12 +1084,16 @@ int main(int argc, char* argv[])
 							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
 								if(menuOver) {
+									Mix_PlayChannel(-1, pressedSound, 0);
+
 									win = false;
 									gameState = MENU;
 									menuOver = false;
 								}
 
 								if(playOver) {
+									Mix_PlayChannel(-1, pressedSound, 0);
+
 									win = false;
 									gameState = PLAYERS1;
 									menuOver = false;
@@ -1032,6 +1116,21 @@ int main(int argc, char* argv[])
 				// collision
 				menuOver = SDL_HasIntersection(&activePos, &menuNPos);
 				playOver = SDL_HasIntersection(&activePos, &playNPos);
+
+
+				if(menuOver || playOver)
+				{
+					if(alreadyOver == false)
+					{
+						Mix_PlayChannel(-1, overSound, 0);
+						alreadyOver = true;
+					}
+				}
+
+				if(!menuOver && !playOver)
+				{
+					alreadyOver = false;
+				}
 
 
 				// Start drawing
@@ -1078,6 +1177,7 @@ int main(int argc, char* argv[])
 
 
 		case LOSE:
+			alreadyOver = false;
 			lose = true;
 
 			while (lose)
@@ -1105,12 +1205,16 @@ int main(int argc, char* argv[])
 							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
 								if(menuOver) {
+									Mix_PlayChannel(-1, pressedSound, 0);
+
 									lose = false;
 									gameState = MENU;
 									menuOver = false;
 								}
 
 								if(playOver) {
+									Mix_PlayChannel(-1, pressedSound, 0);
+
 									lose = false;
 									gameState = PLAYERS1;
 									menuOver = false;
@@ -1133,6 +1237,21 @@ int main(int argc, char* argv[])
 				// collision
 				menuOver = SDL_HasIntersection(&activePos, &menuNPos);
 				playOver = SDL_HasIntersection(&activePos, &playNPos);
+
+
+				if(menuOver || playOver)
+				{
+					if(alreadyOver == false)
+					{
+						Mix_PlayChannel(-1, overSound, 0);
+						alreadyOver = true;
+					}
+				}
+
+				if(!menuOver && !playOver)
+				{
+					alreadyOver = false;
+				}
 
 
 				// Start drawing

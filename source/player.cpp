@@ -75,6 +75,90 @@ Player::Player(SDL_Renderer *renderer, int pNum, string filePath, float x, float
 }
 
 
+void Player::CreateBullet()
+{
+	// see if there is a bullet active to fire
+	for (int i = 0; i < bulletList.size(); i++)
+	{
+		//see if the bullet is not active
+		if (bulletList[i].active == false)
+		{
+			//set bullet to active
+			bulletList[i].active = true;
+
+			// use some math in the x position to get the bullet close
+			// to the center of the player using width
+			bulletList[i].posRect.x = (pos_X + (posRect.w / 2));
+
+			// finish aligning to the player center using the texture width
+			bulletList[i].posRect.x = (bulletList[i].posRect.x - (bulletList[i].posRect.w / 2));
+			bulletList[i].posRect.y = posRect.y;
+
+			// set the x and y positions of the bullet's float positions
+			bulletList[i].pos_X = pos_X;
+			bulletList[i].pos_Y = pos_Y;
+
+			// once bullet is found, break out of loop
+			break;
+		}
+	}
+}
+
+
+void Player::OnControllerButton(const SDL_ControllerButtonEvent event)
+{
+	if (event.which == 0 && playerNum == 0)
+	{
+		if (event.button == 0)
+		{
+			CreateBullet();
+		}
+	}
+
+
+	if (event.which == 1 && playerNum == 1)
+	{
+		if (event.button == 0)
+		{
+			CreateBullet();
+		}
+	}
+}
+
+
+void Player::OnControllerAxis(const SDL_ControllerAxisEvent event)
+{
+	if (event.which == 0 && playerNum == 0)
+	{
+		if (event.axis == 0)
+		{
+			if (event.value < -JOYSTICK_DEAD_ZONE) {
+				xDir = -1.0f;
+			}
+			else if (event.value > JOYSTICK_DEAD_ZONE) {
+				xDir = 1.0f;
+			}
+			else {
+				xDir = 0.0f;
+			}
+		}
+
+		if (event.axis == 1)
+		{
+			if (event.value < -JOYSTICK_DEAD_ZONE) {
+				yDir = -1.0f;
+			}
+			else if (event.value > JOYSTICK_DEAD_ZONE) {
+				yDir = 1.0f;
+			}
+			else {
+				yDir = 0.0f;
+			}
+		}
+	}
+}
+
+
 void Player::Update(float deltaTime)
 {
 	// Adjust position floats based on speed, direction of joystick axis, and deltaTime
@@ -130,96 +214,11 @@ void Player::Draw(SDL_Renderer *renderer)
 		// Check to see if the bullet is active
 		if(bulletList[i].active)
 		{
-			//// Update the bullet
-			//bulletList[i].Draw(renderer);
+			// Update the bullet
+			bulletList[i].Draw(renderer);
 		}
 	}
 }
-
-
-void Player::CreateBullet()
-{
-	// see if there is a bullet active to fire
-	for(int i = 0; i < bulletList.size(); i++)
-	{
-		//see if the bullet is not active
-		if(bulletList[i].active == false)
-		{
-			//set bullet to active
-			bulletList[i].active = true;
-
-			// use some math in the x position to get the bullet close
-			// to the center of the player using width
-			bulletList[i].posRect.x = (pos_X + (posRect.w/2));
-
-			// finish aligning to the player center using the texture width
-			bulletList[i].posRect.x = (bulletList[i].posRect.x - (bulletList[i].posRect.w/2));
-			bulletList[i].posRect.y = posRect.y;
-
-			// set the x and y positions of the bullet's float positions
-			bulletList[i].pos_X = pos_X;
-			bulletList[i].pos_Y = pos_Y;
-
-			// once bullet is found, break out of loop
-			break;
-		}
-	}
-}
-
-
-void Player::OnControllerButton(const SDL_ControllerButtonEvent event)
-{
-	if(event.which == 0 && playerNum == 0)
-	{
-		if(event.button == 0)
-		{
-			cout << "Player 1 - Button A" << endl;
-
-			//CreateBullet();
-		}
-	}
-
-
-	if(event.which == 1 && playerNum == 1)
-	{
-		if(event.button == 0)
-		{
-			cout << "Player 2 - Button A" << endl;
-
-			//CreateBullet();
-		}
-	}
-}
-
-
-void Player::OnControllerAxis(const SDL_ControllerAxisEvent event)
-{
-	if(event.which == 0 && playerNum == 0)
-	{
-		if(event.axis == 0)
-		{
-			if(event.value < -JOYSTICK_DEAD_ZONE) {
-				xDir = -1.0f;
-			} else if (event.value > JOYSTICK_DEAD_ZONE) {
-				xDir = 1.0f;
-			} else {
-				xDir = 0.0f;
-			}
-		}
-
-		if(event.axis == 1)
-		{
-			if(event.value < -JOYSTICK_DEAD_ZONE) {
-				yDir = -1.0f;
-			} else if(event.value > JOYSTICK_DEAD_ZONE) {
-				yDir = 1.0f;
-			} else {
-				yDir = 0.0f;
-			}
-		}
-	}
-}
-
 
 
 Player::~Player()

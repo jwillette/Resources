@@ -861,8 +861,8 @@ int main(int argc, char* argv[])
 								gameState = LOSE;
 							}
 
-							//// send button press info to player1
-							//player1.OnControllerButton(event.cbutton);
+							// send button press info to player1
+							player1.OnControllerButton(event.cbutton);
 						}
 						break;
 
@@ -936,8 +936,8 @@ int main(int argc, char* argv[])
 							}
 						}
 
-						//player1.OnControllerButton(event.cbutton);
-						//player2.OnControllerButton(event.cbutton);
+						player1.OnControllerButton(event.cbutton);
+						player2.OnControllerButton(event.cbutton);
 
 						break;
 
@@ -960,9 +960,6 @@ int main(int argc, char* argv[])
 
 				SDL_RenderCopy(renderer, bkgd1, NULL, &bkgd1Pos);
 				SDL_RenderCopy(renderer, bkgd2, NULL, &bkgd2Pos);
-
-				//// Draw instructions
-				//SDL_RenderCopy(renderer, players2N, NULL, &players2NPos);
 
 
 				player1.Draw(renderer);

@@ -25,9 +25,10 @@ Player::Player(SDL_Renderer *renderer, int pNum, string filePath, string audioPa
 	// Initialize the font system
 	TTF_Init();
 
-	//// Load the font
-	//font = TTF_OpenFont((audioPath + "PHOES__.TTF").c_str(), 40);
+	// Load the font
+	font = TTF_OpenFont((audioPath + "The Curious Cat.ttf").c_str(), 40);
 
+	// X and Y locations for scores
 	if(playerNum == 0)
 	{
 		scorePos.x = scorePos.y = 10;
@@ -39,6 +40,13 @@ Player::Player(SDL_Renderer *renderer, int pNum, string filePath, string audioPa
 		livesPos.x = 650;
 		livesPos.y = 40;
 	}
+
+	// Update score method
+	UpdateScore(renderer);
+
+	// Update lives method
+	UpdateLives(renderer);
+
 
 	// See if this is player 1 or player 2 and create the correct file path
 	if(playerNum == 0)
@@ -140,6 +148,8 @@ void Player::OnControllerButton(const SDL_ControllerButtonEvent event)
 	{
 		if (event.button == 0)
 		{
+			// Test
+			playerScore += 10;
 			CreateBullet();
 		}
 	}
@@ -188,7 +198,73 @@ void Player::OnControllerAxis(const SDL_ControllerAxisEvent event)
 }
 
 
-void Player::Update(float deltaTime)
+// Update lives
+void Player::UpdateLives(SDL_Renderer *renderer)
+{
+	// Fix for to_string problems on linux
+	string Result;
+	ostringstream convert;
+	convert << playerLives;
+	Result = convert.str();
+
+	// Create the text for the font texture
+	tempLives = "Player Lives: " + Result;
+
+	// Check to see what player this is and color the font as needed
+	if(playerNum == 0)
+	{
+		livesSurface = TTF_RenderText_Solid(font, tempLives.c_str(), colorP1);
+	} else {
+		livesSurface = TTF_RenderText_Solid(font, tempLives.c_str(), colorP2);
+	}
+
+	// Create the player score texture
+	scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
+
+	// Get the width and height of the texture
+	SDL_QueryTexture(scoreTexture, NULL, NULL, &scorePos.w, &scorePos.h);
+
+	SDL_FreeSurface(scoreSurface);
+
+	// Set old score
+	oldScore = playerScore;
+}
+
+
+// Update score
+void Player::UpdateScore(SDL_Renderer *renderer)
+{
+	// Fix for to_string problems on linux
+	string Result;
+	ostringstream convert;
+	convert << playerScore;
+	Result = convert.str();
+
+	// Create the text for the font texture
+	tempScore = "Player Score: " + Result;
+
+	// Check to see what player this is and color the font as needed
+	if(playerNum == 0)
+	{
+		scoreSurface = TTF_RenderText_Solid(font, tempScore.c_str(), colorP1);
+	} else {
+		scoreSurface = TTF_RenderText_Solid(font, tempScore.c_str(), colorP2);
+	}
+
+	// Create the player score texture
+	scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
+
+	// Get the width and height of the texture
+	SDL_QueryTexture(scoreTexture, NULL, NULL, &scorePos.w, &scorePos.h);
+
+	SDL_FreeSurface(scoreSurface);
+
+	// Set old score
+	oldScore = playerScore;
+}
+
+
+void Player::Update(float deltaTime, SDL_Renderer *renderer)
 {
 	// Adjust position floats based on speed, direction of joystick axis, and deltaTime
 	pos_X += (speed * xDir) * deltaTime;
@@ -229,6 +305,18 @@ void Player::Update(float deltaTime)
 			bulletList[i].Update(deltaTime);
 		}
 	}
+
+	// Should score be updated?
+	if(playerScore != oldScore)
+	{
+		UpdateScore(renderer);
+	}
+
+	// Should lives be updated?
+	if(playerLives != oldLives)
+	{
+		UpdateLives(renderer);
+	}
 }
 
 
@@ -247,6 +335,12 @@ void Player::Draw(SDL_Renderer *renderer)
 			bulletList[i].Draw(renderer);
 		}
 	}
+
+	// Draw the player score
+	SDL_RenderCopy(renderer, scoreTexture, NULL, &scorePos);
+
+	// Draw the player lives
+	SDL_RenderCopy(renderer, livesTexture, NULL, &livesPos)
 }
 
 

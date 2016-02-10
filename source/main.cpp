@@ -188,6 +188,13 @@ bool players1Over = false, players2Over = false, instructionsOver = false, quitO
 
 // class header
 #include "player.h"
+#include "enemy.h"
+#include <vector>
+#include <stdlib.h>
+#include <time.h>
+
+// variable to hold the list of enemies
+vector<Enemy> enemyList;
 
 
 
@@ -195,6 +202,8 @@ bool players1Over = false, players2Over = false, instructionsOver = false, quitO
 
 int main(int argc, char* argv[])
 {
+	srand(time(NULL));
+
 #if defined(_WIN32) || (_WIN64)
 
 	cout << "Running on Windows..." << endl;
@@ -905,6 +914,16 @@ int main(int argc, char* argv[])
 			alreadyOver = false;
 			players1 = true;
 
+			enemyList.clear();
+
+			for(int i = 0; i < 6; i++)
+			{
+				Enemy tmpEnemy(renderer, images_dir);
+				enemyList.push_back(tmpEnemy);
+			}
+
+
+
 			while (players1)
 			{
 				thisTime = SDL_GetTicks();
@@ -953,7 +972,14 @@ int main(int argc, char* argv[])
 				UpdateBackground();
 
 				// Update player
-				player1.Update(deltaTime);
+				player1.Update(deltaTime, renderer);
+
+
+
+				for(int i = 0; i < enemyList.size(); i++)
+				{
+					enemyList[i].Update(deltaTime);
+				}
 
 
 
@@ -966,6 +992,12 @@ int main(int argc, char* argv[])
 
 				// Draw player 1
 				player1.Draw(renderer);
+
+
+				for(int i = 0; i < enemyList.size(); i++)
+				{
+					enemyList[i].Draw(renderer);
+				}
 
 
 				// SDL render present
@@ -981,6 +1013,16 @@ int main(int argc, char* argv[])
 		case PLAYERS2:
 			alreadyOver = false;
 			players2 = true;
+
+			enemyList.clear();
+
+			for(int i = 0; i < 12; i++)
+			{
+				Enemy tmpEnemy(renderer, images_dir);
+				enemyList.push_back(tmpEnemy);
+			}
+
+
 
 			while (players2)
 			{
@@ -1030,8 +1072,14 @@ int main(int argc, char* argv[])
 				UpdateBackground();
 
 
-				player1.Update(deltaTime);
-				player2.Update(deltaTime);
+				player1.Update(deltaTime, renderer);
+				player2.Update(deltaTime, renderer);
+
+
+				for(int i = 0; i < enemyList.size(); i++)
+				{
+					enemyList[i].Update(deltaTime);
+				}
 
 
 				// Start drawing
@@ -1039,6 +1087,12 @@ int main(int argc, char* argv[])
 
 				SDL_RenderCopy(renderer, bkgd1, NULL, &bkgd1Pos);
 				SDL_RenderCopy(renderer, bkgd2, NULL, &bkgd2Pos);
+
+
+				for(int i = 0; i < enemyList.size(); i++)
+				{
+					enemyList[i].Draw(renderer);
+				}
 
 
 				player1.Draw(renderer);

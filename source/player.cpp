@@ -8,6 +8,9 @@ const int JOYSTICK_DEAD_ZONE = 8000;
 // Player creation method
 Player::Player(SDL_Renderer *renderer, int pNum, string filePath, string audioPath, float x, float y)
 {
+	// Activate the player
+	active = true;
+
 	// Set the player number 0 or 1
 	playerNum = pNum;
 
@@ -148,8 +151,6 @@ void Player::OnControllerButton(const SDL_ControllerButtonEvent event)
 	{
 		if (event.button == 0)
 		{
-			// Test
-			playerScore += 10;
 			CreateBullet();
 		}
 	}
@@ -198,6 +199,29 @@ void Player::OnControllerAxis(const SDL_ControllerAxisEvent event)
 }
 
 
+// Reset player
+void Player::Reset()
+{
+	// Place the player based on player number
+	if(playerNum == 0)
+	{
+		posRect.x = 250.0;
+		posRect.y = 500.0;
+	} else {
+		posRect.x = 550.0;
+		posRect.y = 500.0;
+	}
+
+	pos_X = posRect.x;
+	pos_Y = posRect.y;
+	playerLives = 3;
+	playerScore = 0;
+	xDir = 0;
+	yDir = 0;
+	active = true;
+}
+
+
 // Update lives
 void Player::UpdateLives(SDL_Renderer *renderer)
 {
@@ -219,15 +243,23 @@ void Player::UpdateLives(SDL_Renderer *renderer)
 	}
 
 	// Create the player score texture
-	scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
+	livesTexture = SDL_CreateTextureFromSurface(renderer, livesSurface);
 
 	// Get the width and height of the texture
-	SDL_QueryTexture(scoreTexture, NULL, NULL, &scorePos.w, &scorePos.h);
+	SDL_QueryTexture(livesTexture, NULL, NULL, &livesPos.w, &livesPos.h);
 
-	SDL_FreeSurface(scoreSurface);
+	SDL_FreeSurface(livesSurface);
 
 	// Set old score
-	oldScore = playerScore;
+	oldLives = playerLives;
+
+	// If player has no more lives
+	if(playerLives <= 0)
+	{
+		active = false;
+		posRect.x = posRect.y = -2000;
+		pos_X = pos_Y = -2000;
+	}
 }
 
 
@@ -340,7 +372,7 @@ void Player::Draw(SDL_Renderer *renderer)
 	SDL_RenderCopy(renderer, scoreTexture, NULL, &scorePos);
 
 	// Draw the player lives
-	SDL_RenderCopy(renderer, livesTexture, NULL, &livesPos)
+	SDL_RenderCopy(renderer, livesTexture, NULL, &livesPos);
 }
 
 

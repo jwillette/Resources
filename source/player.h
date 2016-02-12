@@ -45,6 +45,10 @@ using namespace std;
 class Player
 {
 public:
+
+	// is the player still alive?
+	bool active;
+
 	// player score and lives variables
 	int playerScore, oldScore, playerLives, oldLives;
 
@@ -124,7 +128,10 @@ public:
 	// Update lives method
 	void UpdateLives(SDL_Renderer *renderer);
 
+	void Reset();
+
 
 private:
+
 	void CreateBullet();
 };

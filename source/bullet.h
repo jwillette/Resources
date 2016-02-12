@@ -62,6 +62,8 @@ public:
 	// Bullet draw - requires renderer
 	void Draw(SDL_Renderer *renderer);
 
+	void Reset();
+
 	// Bullet destruction method
 	~Bullet();
 };

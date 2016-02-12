@@ -39,7 +39,7 @@ public:
 	bool active;
 
 	// Enemy texture
-	SDL_Texture *texture
+	SDL_Texture *texture;
 
 	// Enemy rectangle for position and size
 	SDL_Rect posRect;

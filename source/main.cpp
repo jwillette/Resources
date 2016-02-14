@@ -112,26 +112,30 @@ int cursorSpeed = 400;
 // move cursor function
 void moveCursor(const SDL_ControllerAxisEvent event)
 {
-	if(event.which == 0)
+	if (event.which == 0)
 	{
-		if(event.axis == 0)
+		if (event.axis == 0)
 		{
-			if(event.value < -JOYSTICK_DEAD_ZONE) {
+			if (event.value < -JOYSTICK_DEAD_ZONE) {
 				xDir = -1.0f;
-			} else if (event.value > JOYSTICK_DEAD_ZONE) {
+			}
+			else if (event.value > JOYSTICK_DEAD_ZONE) {
 				xDir = 1.0f;
-			} else {
+			}
+			else {
 				xDir = 0.0f;
 			}
 		}
 
-		if(event.axis == 1)
+		if (event.axis == 1)
 		{
-			if(event.value < -JOYSTICK_DEAD_ZONE) {
+			if (event.value < -JOYSTICK_DEAD_ZONE) {
 				yDir = -1.0f;
-			} else if(event.value > JOYSTICK_DEAD_ZONE) {
+			}
+			else if (event.value > JOYSTICK_DEAD_ZONE) {
 				yDir = 1.0f;
-			} else {
+			}
+			else {
 				yDir = 0.0f;
 			}
 		}
@@ -155,26 +159,26 @@ void UpdateCursor(float deltaTime)
 	activePos.y = cursorPos.y;
 
 	// off the screen in X
-	if(cursorPos.x < 0)
+	if (cursorPos.x < 0)
 	{
 		cursorPos.x = 0;
 		pos_X = cursorPos.x;
 	}
 
-	if(cursorPos.x > 1024 - cursorPos.w)
+	if (cursorPos.x > 1024 - cursorPos.w)
 	{
 		cursorPos.x = 1024 - cursorPos.w;
 		pos_X = cursorPos.x;
 	}
 
 	// off the screen in Y
-	if(cursorPos.y < 0)
+	if (cursorPos.y < 0)
 	{
 		cursorPos.y = 0;
 		pos_Y = cursorPos.y;
 	}
 
-	if(cursorPos.y > 768 - cursorPos.h)
+	if (cursorPos.y > 768 - cursorPos.h)
 	{
 		cursorPos.y = 768 - cursorPos.h;
 		pos_Y = cursorPos.y;
@@ -184,7 +188,7 @@ void UpdateCursor(float deltaTime)
 
 // variables for the menu button over states
 bool players1Over = false, players2Over = false, instructionsOver = false, quitOver = false,
-		menuOver = false, playOver = false;
+menuOver = false, playOver = false;
 
 // class header
 #include "player.h"
@@ -192,9 +196,28 @@ bool players1Over = false, players2Over = false, instructionsOver = false, quitO
 #include <vector>
 #include <stdlib.h>
 #include <time.h>
+#include "explode.h"
 
 // variable to hold the list of enemies
 vector<Enemy> enemyList;
+vector<Explode> explodeList;
+
+
+void MakeExplosion(int x, int y)
+{
+	for (int i = 0; i < explodeList.size(); i++)
+	{
+		if (explodeList[i].active == false)
+		{
+			explodeList[i].active = true;
+
+			explodeList[i].posRect.x = x;
+			explodeList[i].posRect.y = y;
+
+			break;
+		}
+	}
+}
 
 
 
@@ -256,13 +279,13 @@ int main(int argc, char* argv[])
 
 	// Create an application window with the following settings:
 	window = SDL_CreateWindow(
-			"An SDL2 window",                  // window title
-			SDL_WINDOWPOS_UNDEFINED,           // initial x position
-			SDL_WINDOWPOS_UNDEFINED,           // initial y position
-			1024,                               // width, in pixels
-			768,                               // height, in pixels
-			SDL_WINDOW_OPENGL                  // flags - see below
-	);
+		"An SDL2 window",                  // window title
+		SDL_WINDOWPOS_UNDEFINED,           // initial x position
+		SDL_WINDOWPOS_UNDEFINED,           // initial y position
+		1024,                               // width, in pixels
+		768,                               // height, in pixels
+		SDL_WINDOW_OPENGL                  // flags - see below
+		);
 
 	// Check that the window was successfully created
 	if (window == NULL) {
@@ -592,7 +615,7 @@ int main(int argc, char* argv[])
 	Mix_Music *bgm = Mix_LoadMUS((audio_dir + "Disco-Ants-Go-Clubbin.mp3").c_str());
 
 	// If the music file is not playing, play it
-	if(!Mix_PlayingMusic())
+	if (!Mix_PlayingMusic())
 		Mix_PlayMusic(bgm, -1);
 
 	// Set up a Sound Effect chunk for the button over state
@@ -612,6 +635,14 @@ int main(int argc, char* argv[])
 	// Create the players
 	Player player1 = Player(renderer, 0, images_dir.c_str(), audio_dir.c_str(), 250.0, 500.0);
 	Player player2 = Player(renderer, 1, images_dir.c_str(), audio_dir.c_str(), 750.0, 500.0);
+
+
+	// Create explosions
+	for (int i = 0; i < 20; i++)
+	{
+		Explode tmpExplode(renderer, images_dir, -1000, -1000);
+		explodeList.push_back(tmpExplode);
+	}
 
 
 
@@ -653,7 +684,7 @@ int main(int argc, char* argv[])
 						{
 							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
-								if(players1Over)
+								if (players1Over)
 								{
 									// Play the over sound - plays fine through levels, must pause for quit
 									Mix_PlayChannel(-1, pressedSound, 0);
@@ -663,7 +694,7 @@ int main(int argc, char* argv[])
 									players1Over = false;
 								}
 
-								if(players2Over)
+								if (players2Over)
 								{
 									Mix_PlayChannel(-1, pressedSound, 0);
 
@@ -672,7 +703,7 @@ int main(int argc, char* argv[])
 									players2Over = false;
 								}
 
-								if(instructionsOver)
+								if (instructionsOver)
 								{
 									Mix_PlayChannel(-1, pressedSound, 0);
 
@@ -681,7 +712,7 @@ int main(int argc, char* argv[])
 									instructionsOver = false;
 								}
 
-								if(quitOver)
+								if (quitOver)
 								{
 									Mix_PlayChannel(-1, pressedSound, 0);
 									SDL_Delay(1000);
@@ -719,9 +750,9 @@ int main(int argc, char* argv[])
 
 
 				// If the cursor is over a button, play the over sound
-				if(players1Over || players2Over || instructionsOver || quitOver)
+				if (players1Over || players2Over || instructionsOver || quitOver)
 				{
-					if(alreadyOver == false)
+					if (alreadyOver == false)
 					{
 						Mix_PlayChannel(-1, overSound, 0);
 						alreadyOver = true;
@@ -729,7 +760,7 @@ int main(int argc, char* argv[])
 				}
 
 				// If the cursor is not over any button, reset the alreadyOver variable
-				if(!players1Over && !players2Over && !instructionsOver && !quitOver)
+				if (!players1Over && !players2Over && !instructionsOver && !quitOver)
 				{
 					alreadyOver = false;
 				}
@@ -749,34 +780,38 @@ int main(int argc, char* argv[])
 
 
 				// Draw 1player
-				if(players1Over)
+				if (players1Over)
 				{
 					SDL_RenderCopy(renderer, players1O, NULL, &players1NPos);
-				} else {
+				}
+				else {
 					SDL_RenderCopy(renderer, players1N, NULL, &players1NPos);
 				}
 
 				// Draw 2player
-				if(players2Over)
+				if (players2Over)
 				{
 					SDL_RenderCopy(renderer, players2O, NULL, &players2NPos);
-				} else {
+				}
+				else {
 					SDL_RenderCopy(renderer, players2N, NULL, &players2NPos);
 				}
 
 				// Draw instructions
-				if(instructionsOver)
+				if (instructionsOver)
 				{
 					SDL_RenderCopy(renderer, instructionsO, NULL, &instructionsNPos);
-				} else {
+				}
+				else {
 					SDL_RenderCopy(renderer, instructionsN, NULL, &instructionsNPos);
 				}
 
 				// Draw quit
-				if(quitOver)
+				if (quitOver)
 				{
 					SDL_RenderCopy(renderer, quitO, NULL, &quitNPos);
-				} else {
+				}
+				else {
 					SDL_RenderCopy(renderer, quitN, NULL, &quitNPos);
 				}
 
@@ -826,7 +861,7 @@ int main(int argc, char* argv[])
 						{
 							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
-								if(menuOver) {
+								if (menuOver) {
 									Mix_PlayChannel(-1, pressedSound, 0);
 
 									instructions = false;
@@ -851,16 +886,16 @@ int main(int argc, char* argv[])
 				menuOver = SDL_HasIntersection(&activePos, &menuNPos);
 
 
-				if(menuOver)
+				if (menuOver)
 				{
-					if(alreadyOver == false)
+					if (alreadyOver == false)
 					{
 						Mix_PlayChannel(-1, overSound, 0);
 						alreadyOver = true;
 					}
 				}
 
-				if(!menuOver)
+				if (!menuOver)
 				{
 					alreadyOver = false;
 				}
@@ -880,7 +915,7 @@ int main(int argc, char* argv[])
 
 
 				// Draw menu
-				if(menuOver)
+				if (menuOver)
 				{
 					SDL_RenderCopy(renderer, menuO, NULL, &menuNPos);
 				}
@@ -910,7 +945,7 @@ int main(int argc, char* argv[])
 			enemyList.clear();
 			player1.Reset();
 
-			for(int i = 0; i < 6; i++)
+			for (int i = 0; i < 6; i++)
 			{
 				Enemy tmpEnemy(renderer, images_dir);
 				enemyList.push_back(tmpEnemy);
@@ -953,13 +988,13 @@ int main(int argc, char* argv[])
 							}
 
 							// send button press info to player1
-							if(player1.active)
+							if (player1.active)
 								player1.OnControllerButton(event.cbutton);
 						}
 						break;
 
 					case SDL_CONTROLLERAXISMOTION:
-						if(player1.active)
+						if (player1.active)
 							player1.OnControllerAxis(event.caxis);
 						break;
 					}
@@ -968,34 +1003,35 @@ int main(int argc, char* argv[])
 				UpdateBackground();
 
 				// Update player
-				if(player1.active)
+				if (player1.active)
 					player1.Update(deltaTime, renderer);
 
 
 
-				for(int i = 0; i < enemyList.size(); i++)
+				for (int i = 0; i < enemyList.size(); i++)
 				{
 					enemyList[i].Update(deltaTime);
 				}
 
 
-				if(player1.active == true)	// begin if
+				if (player1.active == true)	// begin if
 				{
 					// Use the player 1 bullet list to see if the active bullets hit
-					for(int i = 0; i < player1.bulletList.size(); i++)
+					for (int i = 0; i < player1.bulletList.size(); i++)
 					{
-						if(player1.bulletList[i].active == true)
+						if (player1.bulletList[i].active == true)
 						{
-							for(int j = 0; j < enemyList.size(); j++)
+							for (int j = 0; j < enemyList.size(); j++)
 							{
-								if(SDL_HasIntersection(&player1.bulletList[i].posRect, &enemyList[j].posRect))
+								if (SDL_HasIntersection(&player1.bulletList[i].posRect, &enemyList[j].posRect))
 								{
 									Mix_PlayChannel(-1, explosionSound, 0);
+									MakeExplosion(enemyList[j].posRect.x, enemyList[j].posRect.y);
 									enemyList[j].Reset();
 									player1.bulletList[i].Reset();
 									player1.playerScore += 50;
 
-									if(player1.playerScore >= 1000)
+									if (player1.playerScore >= 1000)
 									{
 										players1 = false;
 										gameState = WIN;
@@ -1006,15 +1042,16 @@ int main(int argc, char* argv[])
 					}
 
 
-					for(int i = 0; i < enemyList.size(); i++)
+					for (int i = 0; i < enemyList.size(); i++)
 					{
-						if(SDL_HasIntersection(&player1.posRect, &enemyList[i].posRect))
+						if (SDL_HasIntersection(&player1.posRect, &enemyList[i].posRect))
 						{
 							Mix_PlayChannel(-1, explosionSound, 0);
+							MakeExplosion(player1.posRect.x - 32, player1.posRect.y - 32);
 							enemyList[i].Reset();
 							player1.playerLives -= 1;
 
-							if(player1.playerLives <= 0)
+							if (player1.playerLives <= 0)
 							{
 								players1 = false;
 								gameState = LOSE;
@@ -1026,6 +1063,16 @@ int main(int argc, char* argv[])
 
 
 
+				for (int i = 0; i < explodeList.size(); i++)
+				{
+					if (explodeList[i].active == true)
+					{
+						explodeList[i].Update(deltaTime);
+					}
+				}
+
+
+
 				// Start drawing
 				SDL_RenderClear(renderer);
 
@@ -1033,7 +1080,7 @@ int main(int argc, char* argv[])
 				SDL_RenderCopy(renderer, bkgd2, NULL, &bkgd2Pos);
 
 
-				for(int i = 0; i < enemyList.size(); i++)
+				for (int i = 0; i < enemyList.size(); i++)
 				{
 					enemyList[i].Draw(renderer);
 				}
@@ -1041,6 +1088,15 @@ int main(int argc, char* argv[])
 
 				// Draw player 1
 				player1.Draw(renderer);
+
+
+				for (int i = 0; i < explodeList.size(); i++)
+				{
+					if (explodeList[i].active == true)
+					{
+						explodeList[i].Draw(renderer);
+					}
+				}
 
 
 				// SDL render present
@@ -1061,7 +1117,7 @@ int main(int argc, char* argv[])
 			player1.Reset();
 			player2.Reset();
 
-			for(int i = 0; i < 12; i++)
+			for (int i = 0; i < 12; i++)
 			{
 				Enemy tmpEnemy(renderer, images_dir);
 				enemyList.push_back(tmpEnemy);
@@ -1102,19 +1158,19 @@ int main(int argc, char* argv[])
 							}
 						}
 
-						if(player1.active)
+						if (player1.active)
 							player1.OnControllerButton(event.cbutton);
 
-						if(player2.active)
+						if (player2.active)
 							player2.OnControllerButton(event.cbutton);
 
 						break;
 
 					case SDL_CONTROLLERAXISMOTION:
-						if(player1.active)
+						if (player1.active)
 							player1.OnControllerAxis(event.caxis);
 
-						if(player2.active)
+						if (player2.active)
 							player2.OnControllerAxis(event.caxis);
 						break;
 					}
@@ -1123,37 +1179,37 @@ int main(int argc, char* argv[])
 				UpdateBackground();
 
 
-				if(player1.active)
+				if (player1.active)
 					player1.Update(deltaTime, renderer);
 
-				if(player2.active)
+				if (player2.active)
 					player2.Update(deltaTime, renderer);
 
 
 
-				for(int i = 0; i < enemyList.size(); i++)
+				for (int i = 0; i < enemyList.size(); i++)
 				{
 					enemyList[i].Update(deltaTime);
 				}
 
 
-				if(player1.active == true)	// begin if
+				if (player1.active == true)	// begin if
 				{
 					// Use the player 1 bullet list to see if the active bullets hit
-					for(int i = 0; i < player1.bulletList.size(); i++)
+					for (int i = 0; i < player1.bulletList.size(); i++)
 					{
-						if(player1.bulletList[i].active == true)
+						if (player1.bulletList[i].active == true)
 						{
-							for(int j = 0; j < enemyList.size(); j++)
+							for (int j = 0; j < enemyList.size(); j++)
 							{
-								if(SDL_HasIntersection(&player1.bulletList[i].posRect, &enemyList[j].posRect))
+								if (SDL_HasIntersection(&player1.bulletList[i].posRect, &enemyList[j].posRect))
 								{
 									Mix_PlayChannel(-1, explosionSound, 0);
 									enemyList[j].Reset();
 									player1.bulletList[i].Reset();
 									player1.playerScore += 50;
 
-									if(player1.playerScore >= 1000)
+									if (player1.playerScore >= 1000)
 									{
 										players2 = false;
 										gameState = WIN;
@@ -1164,15 +1220,15 @@ int main(int argc, char* argv[])
 					}
 
 
-					for(int i = 0; i < enemyList.size(); i++)
+					for (int i = 0; i < enemyList.size(); i++)
 					{
-						if(SDL_HasIntersection(&player1.posRect, &enemyList[i].posRect))
+						if (SDL_HasIntersection(&player1.posRect, &enemyList[i].posRect))
 						{
 							Mix_PlayChannel(-1, explosionSound, 0);
 							enemyList[i].Reset();
 							player1.playerLives -= 1;
 
-							if(player1.playerLives <= 0 && player2.playerLives <= 0)
+							if (player1.playerLives <= 0 && player2.playerLives <= 0)
 							{
 								players2 = false;
 								gameState = LOSE;
@@ -1184,23 +1240,23 @@ int main(int argc, char* argv[])
 
 
 
-				if(player2.active == true)	// begin if
+				if (player2.active == true)	// begin if
 				{
 					// Use the player 1 bullet list to see if the active bullets hit
-					for(int i = 0; i < player2.bulletList.size(); i++)
+					for (int i = 0; i < player2.bulletList.size(); i++)
 					{
-						if(player2.bulletList[i].active == true)
+						if (player2.bulletList[i].active == true)
 						{
-							for(int j = 0; j < enemyList.size(); j++)
+							for (int j = 0; j < enemyList.size(); j++)
 							{
-								if(SDL_HasIntersection(&player2.bulletList[i].posRect, &enemyList[j].posRect))
+								if (SDL_HasIntersection(&player2.bulletList[i].posRect, &enemyList[j].posRect))
 								{
 									Mix_PlayChannel(-1, explosionSound, 0);
 									enemyList[j].Reset();
 									player2.bulletList[i].Reset();
 									player2.playerScore += 50;
 
-									if(player2.playerScore >= 1000)
+									if (player2.playerScore >= 1000)
 									{
 										players2 = false;
 										gameState = WIN;
@@ -1211,15 +1267,15 @@ int main(int argc, char* argv[])
 					}
 
 
-					for(int i = 0; i < enemyList.size(); i++)
+					for (int i = 0; i < enemyList.size(); i++)
 					{
-						if(SDL_HasIntersection(&player2.posRect, &enemyList[i].posRect))
+						if (SDL_HasIntersection(&player2.posRect, &enemyList[i].posRect))
 						{
 							Mix_PlayChannel(-1, explosionSound, 0);
 							enemyList[i].Reset();
 							player2.playerLives -= 1;
 
-							if(player1.playerLives <= 0 && player2.playerLives <= 0)
+							if (player1.playerLives <= 0 && player2.playerLives <= 0)
 							{
 								players2 = false;
 								gameState = LOSE;
@@ -1238,7 +1294,7 @@ int main(int argc, char* argv[])
 				SDL_RenderCopy(renderer, bkgd2, NULL, &bkgd2Pos);
 
 
-				for(int i = 0; i < enemyList.size(); i++)
+				for (int i = 0; i < enemyList.size(); i++)
 				{
 					enemyList[i].Draw(renderer);
 				}
@@ -1286,7 +1342,7 @@ int main(int argc, char* argv[])
 						{
 							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
-								if(menuOver) {
+								if (menuOver) {
 									Mix_PlayChannel(-1, pressedSound, 0);
 
 									win = false;
@@ -1294,7 +1350,7 @@ int main(int argc, char* argv[])
 									menuOver = false;
 								}
 
-								if(playOver) {
+								if (playOver) {
 									Mix_PlayChannel(-1, pressedSound, 0);
 
 									win = false;
@@ -1321,16 +1377,16 @@ int main(int argc, char* argv[])
 				playOver = SDL_HasIntersection(&activePos, &playNPos);
 
 
-				if(menuOver || playOver)
+				if (menuOver || playOver)
 				{
-					if(alreadyOver == false)
+					if (alreadyOver == false)
 					{
 						Mix_PlayChannel(-1, overSound, 0);
 						alreadyOver = true;
 					}
 				}
 
-				if(!menuOver && !playOver)
+				if (!menuOver && !playOver)
 				{
 					alreadyOver = false;
 				}
@@ -1347,19 +1403,21 @@ int main(int argc, char* argv[])
 
 
 				// Draw menu
-				if(menuOver) {
+				if (menuOver) {
 
 					SDL_RenderCopy(renderer, menuO, NULL, &menuNPos);
-				} else {
+				}
+				else {
 
 					SDL_RenderCopy(renderer, menuN, NULL, &menuNPos);
 				}
 
 				// Draw play again
-				if(playOver) {
+				if (playOver) {
 
 					SDL_RenderCopy(renderer, playO, NULL, &playNPos);
-				} else {
+				}
+				else {
 
 					SDL_RenderCopy(renderer, playN, NULL, &playNPos);
 				}
@@ -1407,7 +1465,7 @@ int main(int argc, char* argv[])
 						{
 							if (event.cbutton.button == SDL_CONTROLLER_BUTTON_A)
 							{
-								if(menuOver) {
+								if (menuOver) {
 									Mix_PlayChannel(-1, pressedSound, 0);
 
 									lose = false;
@@ -1415,7 +1473,7 @@ int main(int argc, char* argv[])
 									menuOver = false;
 								}
 
-								if(playOver) {
+								if (playOver) {
 									Mix_PlayChannel(-1, pressedSound, 0);
 
 									lose = false;
@@ -1442,16 +1500,16 @@ int main(int argc, char* argv[])
 				playOver = SDL_HasIntersection(&activePos, &playNPos);
 
 
-				if(menuOver || playOver)
+				if (menuOver || playOver)
 				{
-					if(alreadyOver == false)
+					if (alreadyOver == false)
 					{
 						Mix_PlayChannel(-1, overSound, 0);
 						alreadyOver = true;
 					}
 				}
 
-				if(!menuOver && !playOver)
+				if (!menuOver && !playOver)
 				{
 					alreadyOver = false;
 				}
@@ -1468,19 +1526,21 @@ int main(int argc, char* argv[])
 
 
 				// Draw menu
-				if(menuOver) {
+				if (menuOver) {
 
 					SDL_RenderCopy(renderer, menuO, NULL, &menuNPos);
-				} else {
+				}
+				else {
 
 					SDL_RenderCopy(renderer, menuN, NULL, &menuNPos);
 				}
 
 				// Draw play again
-				if(playOver) {
+				if (playOver) {
 
 					SDL_RenderCopy(renderer, playO, NULL, &playNPos);
-				} else {
+				}
+				else {
 
 					SDL_RenderCopy(renderer, playN, NULL, &playNPos);
 				}
